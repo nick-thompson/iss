@@ -1,0 +1,13 @@
+{
+  "name": "iss",
+  "version": "0.1.0",
+  "description": "Write inline styles; ship optimized CSS stylesheets.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nick Thompson",
+  "license": "MIT",
+  "dependencies": {
+    "jscodeshift": "^0.3.28"
+  }
+}
