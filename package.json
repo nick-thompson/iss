@@ -8,6 +8,7 @@
   "author": "Nick Thompson",
   "license": "MIT",
   "dependencies": {
-    "jscodeshift": "^0.3.28"
+    "jscodeshift": "^0.3.28",
+    "react": "^15.3.1"
   }
 }
