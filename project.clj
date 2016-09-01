@@ -4,6 +4,6 @@
                  [org.clojure/clojurescript "1.9.226"]
                  [org.omcljs/om "0.9.0"]]
   :jvm-opts ^:replace ["-Xmx1g" "-server"]
-  :source-paths ["src" "lib" "target/classes"]
+  :source-paths ["src" "target/classes"]
   :clean-targets ["out" "release"]
   :target-path "target")
