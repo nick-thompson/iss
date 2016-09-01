@@ -8,7 +8,13 @@
 
 (def app-state (atom {:foo "bar"}))
 
-(defn widget [data owner]
+(defstyles bump-app
+  {:container
+    {:backgroundColor white
+     :color black
+     :font system-font-large}})
+
+(defn app [data owner]
   (reify
     om/ICheckState
     om/IInitState
@@ -16,10 +22,10 @@
       {:count 0})
     om/IWillMount
     (will-mount [_]
-      (println "Hello widget mounting"))
+      (println "Hello app mounting"))
     om/IWillUnmount
     (will-unmount [_]
-      (println "Hello widget unmounting"))
+      (println "Hello app unmounting"))
     om/IRenderState
     (render-state [_ {:keys [count]}]
       (println "Render!")
@@ -39,11 +45,5 @@
                   (om/update-state! owner :count identity))}
           "Do Nothing")))))
 
-(defstyles bump-app
-  {:container
-    {:backgroundColor white
-     :color black
-     :font system-font-large}})
-
-(om/root widget app-state
+(om/root app app-state
   {:target (.-body js/document)})
