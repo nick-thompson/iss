@@ -1,8 +1,8 @@
 (ns iss.core
   (:require [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
-            [iss.constants :refer [black white system-font-large]])
-  (:require-macros [iss.macros :as macros :refer [defstyles]]))
+            [iss.constants :refer [black system-font-large default-padding]])
+  (:require-macros [iss.macros :as macros :refer [defstyles lighten add]]))
 
 (enable-console-print!)
 
@@ -11,11 +11,12 @@
 (defstyles bump-app
   {:container
     {:alignItems "center"
-     :backgroundColor white
+     :backgroundColor (lighten black 10)
      :color black
      :display "flex"
      :flexDirection "column"
-     :font system-font-large}})
+     :font system-font-large
+     :padding (add default-padding 8)}})
 
 (defn app [data owner]
   (reify
