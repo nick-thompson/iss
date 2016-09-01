@@ -10,8 +10,11 @@
 
 (defstyles bump-app
   {:container
-    {:backgroundColor white
+    {:alignItems "center"
+     :backgroundColor white
      :color black
+     :display "flex"
+     :flexDirection "column"
      :font system-font-large}})
 
 (defn app [data owner]
