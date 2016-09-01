@@ -39,13 +39,6 @@
                   (om/update-state! owner :count identity))}
           "Do Nothing")))))
 
-; (def styles
-;   (js/__issStyleSheetCreate__ #js
-;     {:container #js
-;       {:backgroundColor (macros/inline white)
-;        :color (macros/inline black)
-;        :font (macros/inline system-font-large)}}))
-
 (defstyles bump-app
   {:container
     {:backgroundColor white
