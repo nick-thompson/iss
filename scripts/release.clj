@@ -5,7 +5,6 @@
 (let [start (System/nanoTime)]
   (b/build "src"
     {:main 'iss.core
-     :libs ["lib/stylesheet.js"]
      :language-in :ecmascript6
      :language-out :ecmascript5-strict
      :output-to "release/iss.js"
