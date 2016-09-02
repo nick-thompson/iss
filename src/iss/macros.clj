@@ -35,13 +35,12 @@
   (let [inlined (->js-val (inline styles))]
     `(def ~label (js/__issStyleSheetCreate__ ~inlined))))
 
-(defmacro lighten
-  "Technically this does lighten the provided color; but I don't feel like doing
-  actual color math right now. Just here for demonstration."
-  [color amount]
-  "#ffffff")
+(defmacro gradient
+  "Simple diagonal linear gradient from one corner to the other."
+  [from to]
+  (str "linear-gradient(to top left," from ", " to ")"))
 
-(defmacro add
-  "To demonstrate inlining binary expressions."
-  [a b]
-  (+ a b))
+(defmacro border
+  "A one pixel solid border of the given color."
+  [color]
+  (str "1px solid " color))

@@ -1,19 +1,19 @@
 (ns iss.buttons
   (:require [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
-            [iss.constants :refer [black system-font-large default-padding]])
-  (:require-macros [iss.macros :as macros :refer [defstyles lighten add]]))
+            [iss.constants :refer [light-gray]])
+  (:require-macros [iss.macros :as macros :refer [defstyles border]]))
 
 (defstyles buttons
   {:button
    {:display "inline-block"
     :padding "0 3rem"
-    :color "#eaeaea"
+    :color light-gray
     :font-weight 600
     :whiteSpace "nowrap"
     :backgroundColor "transparent"
     :borderRadius 4
-    :border "1px solid #bbb"
+    :border (border light-gray)
     :cursor "pointer"
     :outline "none"
     :fontSize "2rem"}})

@@ -2,8 +2,8 @@
   (:require [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
             [iss.buttons :as buttons]
-            [iss.constants :refer [black system-font-large default-padding]])
-  (:require-macros [iss.macros :as macros :refer [defstyles lighten add]]))
+            [iss.constants :refer [light-blue dark-blue light-gray]])
+  (:require-macros [iss.macros :as macros :refer [defstyles gradient]]))
 
 (enable-console-print!)
 
@@ -14,15 +14,16 @@
       {:my-number 23}]}))
 
 (defstyles even-odd
-  {:container
+  {:app
     {:alignItems "center"
-     :backgroundImage "linear-gradient(to top left, #2C3E50, #4CA1AF)"
-     :color black
+     :backgroundImage (gradient dark-blue light-blue)
      :display "flex"
      :flexGrow 1
-     :font system-font-large
-     :justifyContent "space-around"
-     :padding (add default-padding 8)}
+     :justifyContent "space-around"}
+   :container
+    {:display "flex"
+     :flex 1
+     :maxWidth 760}
    :widget
     {:alignItems "center"
      :display "flex"
@@ -30,7 +31,7 @@
      :flexDirection "column"
      :zIndex 1}
    :title
-    {:color "#eaeaea"
+    {:color light-gray
      :margin "1rem"
      :fontSize "4.2rem"}})
 
@@ -77,8 +78,9 @@
   (reify
     om/IRender
     (render [_]
-      (apply dom/div #js {:className (.-container even-odd)}
-        (om/build-all even-odd-widget (:widgets props))))))
+      (dom/div #js {:className (.-app even-odd)}
+        (apply dom/div #js {:className (.-container even-odd)}
+          (om/build-all even-odd-widget (:widgets props)))))))
 
 (om/root app app-state
   {:target (.-body js/document)})
