@@ -1,7 +1,11 @@
 const fs = require('fs');
+const path = require('path');
 const recast = require('recast');
 
 const CSSPropertyOperations = require('react/lib/CSSPropertyOperations');
+
+const outPath = path.resolve('./out/iss.css');
+const out = fs.createWriteStream(outPath, {flags: 'a'});
 
 module.exports = function(fileInfo, api) {
   const j = api.jscodeshift;
@@ -15,26 +19,50 @@ module.exports = function(fileInfo, api) {
   }).filter(function(expr) {
     const args = expr.value.arguments;
     return args.length === 1 && args[0].type === 'ObjectExpression';
-  }).replaceWith(function(expr) {
-    const styleExpr = expr.value.arguments[0];
-    const batch = [];
+  }).replaceWith(function(callExpr) {
+    // We've identified a CallExpression with the form:
+    //
+    //  var styles = __issStyleSheetCreate__({
+    //    someClass: {
+    //      font: 8,
+    //      padding: 8
+    //    },
+    //    someOtherClass: {
+    //      font: 8,
+    //      padding: 8
+    //    },
+    //  });
+    //
+    const callArgs = callExpr.value.arguments[0];
 
-    const props = styleExpr.properties.map(function(property) {
-      // This is what we write out to a stylesheet, with a selector governed
-      // by the same name we pass as the literal value below.
-      const source = recast.prettyPrint(property.value).code;
-      const stylesObj = JSON.parse(source);
-      const markup = CSSPropertyOperations.createMarkupForStyles(stylesObj, null);
+    // For each (class, styles) pair in the above object, we extract the styles
+    // and push them into an external stylesheet under a unique selector, and
+    // build a set of (class, selector) pairs to be written back into the AST.
+    //
+    //  var styles = {
+    //    someClass: 'GlaHquq0',
+    //    someOtherClass: 'BG2bHbGl',
+    //  };
+    //
+    const mapEntries = callArgs.properties.map(function(property) {
+      const classIdentifier = property.key;
+      const styles = JSON.parse(recast.prettyPrint(property.value).code);
+      const markup = CSSPropertyOperations.createMarkupForStyles(styles, null);
       const selector = 'swag';
-      const declaration = `.${selector} {\n${markup}\n}`
+      const declaration = `.${selector}{${markup}}`;
 
-      batch.push(declaration);
-      return j.property('init', property.key, j.literal(selector));
+      // Write out the CSS declaration.
+      out.write(declaration, 'utf8');
+
+      // Return a map entry.
+      return j.property('init', classIdentifier, j.literal(selector));
     });
 
-    const output = batch.join('\n');
-    fs.appendFileSync('./out/iss.css', output);
-    return j.objectExpression(props);
+    out.end();
+
+    // Replace the __issStyleSheetCreate__ CallExpression with the object
+    // literal mapping classIdentifiers to actual classNames.
+    return j.objectExpression(mapEntries);
   });
 
   return root.toSource();
