@@ -6,48 +6,79 @@
 
 (enable-console-print!)
 
-(def app-state (atom {:foo "bar"}))
+(def app-state
+  (atom
+    {:widgets
+     [{:my-number 16}
+      {:my-number 23}]}))
 
-(defstyles bump-app
+(defstyles even-odd
   {:container
     {:alignItems "center"
-     :backgroundColor (lighten black 10)
+     :backgroundImage "linear-gradient(to top left, #2C3E50, #4CA1AF)"
      :color black
      :display "flex"
-     :flexDirection "column"
+     :flexGrow 1
      :font system-font-large
-     :padding (add default-padding 8)}})
+     :justifyContent "space-around"
+     :padding (add default-padding 8)}
+   :widget
+    {:alignItems "center"
+     :display "flex"
+     :flexBasis "50%"
+     :flexDirection "column"
+     :zIndex 1}
+   :title
+    {:color "#d2d2d2"
+     :fontSize "2.4rem"}})
 
-(defn app [data owner]
+(defmulti even-odd-widget
+  (fn [props _] (even? (:my-number props))))
+
+(defmethod even-odd-widget true
+  [props owner]
   (reify
-    om/ICheckState
-    om/IInitState
-    (init-state [_]
-      {:count 0})
     om/IWillMount
     (will-mount [_]
-      (println "Hello app mounting"))
+      (println "Even widget mounting"))
     om/IWillUnmount
     (will-unmount [_]
-      (println "Hello app unmounting"))
-    om/IRenderState
-    (render-state [_ {:keys [count]}]
-      (println "Render!")
-      (dom/div #js {:className (.-container bump-app)}
-        (dom/h2 nil "Hello world!")
-        (dom/p nil (str "Count: " count))
+      (println "Even widget unmounting"))
+    om/IRender
+    (render [_]
+      (dom/div #js {:className (.-widget even-odd)}
+        (dom/h2 #js {:className (.-title even-odd)}
+          (str "Even Widget: " (:my-number props)))
+        (dom/p nil (:text props))
         (dom/button
-          #js {:onClick
-               #(do
-                  (println "I can read!" (:foo data))
-                  (om/update-state! owner :count inc))}
-          "Bump!")
+          #js {:onClick #(om/transact! props :my-number inc)}
+          "+")))))
+
+(defmethod even-odd-widget false
+  [props owner]
+  (reify
+    om/IWillMount
+    (will-mount [_]
+      (println "Odd widget mounting"))
+    om/IWillUnmount
+    (will-unmount [_]
+      (println "Odd widget unmounting"))
+    om/IRender
+    (render [_]
+      (dom/div #js {:className (.-widget even-odd)}
+        (dom/h2 #js {:className (.-title even-odd)}
+          (str "Odd Widget: " (:my-number props)))
+        (dom/p nil (:text props))
         (dom/button
-          #js {:onClick
-               #(do
-                  (println "I can also read!" (:foo data))
-                  (om/update-state! owner :count identity))}
-          "Do Nothing")))))
+          #js {:onClick #(om/transact! props :my-number inc)}
+          "+")))))
+
+(defn app [props owner]
+  (reify
+    om/IRender
+    (render [_]
+      (apply dom/div #js {:className (.-container even-odd)}
+        (om/build-all even-odd-widget (:widgets props))))))
 
 (om/root app app-state
   {:target (.-body js/document)})

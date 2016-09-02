@@ -1,0 +1,13 @@
+html {
+  font-size: 62.5%;
+  height: 100%;
+  width: 100%; }
+
+body {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5em;
+  line-height: 1.6;
+  font-weight: 400;
+  height: 100%;
+  width: 100%; }
