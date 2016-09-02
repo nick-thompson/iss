@@ -1,6 +1,7 @@
 (ns iss.core
   (:require [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
+            [iss.buttons :as buttons]
             [iss.constants :refer [black system-font-large default-padding]])
   (:require-macros [iss.macros :as macros :refer [defstyles lighten add]]))
 
@@ -29,8 +30,9 @@
      :flexDirection "column"
      :zIndex 1}
    :title
-    {:color "#d2d2d2"
-     :fontSize "2.4rem"}})
+    {:color "#eaeaea"
+     :margin "1rem"
+     :fontSize "4.2rem"}})
 
 (defmulti even-odd-widget
   (fn [props _] (even? (:my-number props))))
@@ -48,11 +50,10 @@
     (render [_]
       (dom/div #js {:className (.-widget even-odd)}
         (dom/h2 #js {:className (.-title even-odd)}
-          (str "Even Widget: " (:my-number props)))
-        (dom/p nil (:text props))
-        (dom/button
-          #js {:onClick #(om/transact! props :my-number inc)}
-          "+")))))
+          (str (:my-number props)))
+        (om/build buttons/button
+          {:onClick #(om/transact! props :my-number inc)}
+          {:init-state {:text "+"}})))))
 
 (defmethod even-odd-widget false
   [props owner]
@@ -67,11 +68,10 @@
     (render [_]
       (dom/div #js {:className (.-widget even-odd)}
         (dom/h2 #js {:className (.-title even-odd)}
-          (str "Odd Widget: " (:my-number props)))
-        (dom/p nil (:text props))
-        (dom/button
-          #js {:onClick #(om/transact! props :my-number inc)}
-          "+")))))
+          (str (:my-number props)))
+        (om/build buttons/button
+          {:onClick #(om/transact! props :my-number inc)}
+          {:init-state {:text "+"}})))))
 
 (defn app [props owner]
   (reify
