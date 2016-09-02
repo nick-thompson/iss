@@ -28,8 +28,7 @@
     {:alignItems "center"
      :display "flex"
      :flexBasis "50%"
-     :flexDirection "column"
-     :zIndex 1}
+     :flexDirection "column"}
    :title
     {:color light-gray
      :margin "1rem"
@@ -53,7 +52,7 @@
         (dom/h2 #js {:className (.-title even-odd)}
           (str (:my-number props)))
         (om/build buttons/button
-          {:onClick #(om/transact! props :my-number inc)}
+          {:even true :onClick #(om/transact! props :my-number inc)}
           {:init-state {:text "+"}})))))
 
 (defmethod even-odd-widget false
@@ -71,7 +70,7 @@
         (dom/h2 #js {:className (.-title even-odd)}
           (str (:my-number props)))
         (om/build buttons/button
-          {:onClick #(om/transact! props :my-number inc)}
+          {:even false :onClick #(om/transact! props :my-number inc)}
           {:init-state {:text "+"}})))))
 
 (defn app [props owner]
