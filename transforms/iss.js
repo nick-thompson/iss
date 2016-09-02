@@ -1,4 +1,5 @@
 const fs = require('fs');
+const recast = require('recast');
 
 const CSSPropertyOperations = require('react/lib/CSSPropertyOperations');
 
@@ -21,7 +22,8 @@ module.exports = function(fileInfo, api) {
     const props = styleExpr.properties.map(function(property) {
       // This is what we write out to a stylesheet, with a selector governed
       // by the same name we pass as the literal value below.
-      const stylesObj = JSON.parse(j(property.value).toSource());
+      const source = recast.prettyPrint(property.value).code;
+      const stylesObj = JSON.parse(source);
       const markup = CSSPropertyOperations.createMarkupForStyles(stylesObj, null);
       const selector = 'swag';
       const declaration = `.${selector} {\n${markup}\n}`

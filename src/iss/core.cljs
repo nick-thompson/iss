@@ -15,9 +15,8 @@
      :color black
      :display "flex"
      :flexDirection "column"
-     :font system-font-large}})
-     ; TODO: This evals to (18) in the js output which breaks JSON.parse
-     ; :padding (add default-padding 8)}})
+     :font system-font-large
+     :padding (add default-padding 8)}})
 
 (defn app [data owner]
   (reify
