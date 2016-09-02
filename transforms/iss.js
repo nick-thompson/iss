@@ -5,6 +5,7 @@ const recast = require('recast');
 const CSSPropertyOperations = require('react/lib/CSSPropertyOperations');
 const Hashids = require('hashids');
 
+const debugMode = (process.env.DEBUG || '').toLowerCase() === 'true';
 const outPath = path.resolve('./out/iss.css');
 const out = fs.createWriteStream(outPath, {flags: 'a'});
 const hashids = new Hashids('iss4lyfe', 0, 'abcdefghijklmnopqrstuvwxyz');
@@ -50,7 +51,8 @@ module.exports = function(fileInfo, api) {
       const classIdentifier = property.key;
       const styles = JSON.parse(recast.prettyPrint(property.value).code);
       const markup = CSSPropertyOperations.createMarkupForStyles(styles, null);
-      const selector = hashids.encode(Date.now());
+      const hash = hashids.encode(Date.now());
+      const selector = debugMode ? `_${hash}_${classIdentifier.value}` : hash;
       const declaration = `.${selector}{${markup}}`;
 
       // Write out the CSS declaration.
