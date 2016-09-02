@@ -3,9 +3,11 @@ const path = require('path');
 const recast = require('recast');
 
 const CSSPropertyOperations = require('react/lib/CSSPropertyOperations');
+const Hashids = require('hashids');
 
 const outPath = path.resolve('./out/iss.css');
 const out = fs.createWriteStream(outPath, {flags: 'a'});
+const hashids = new Hashids('iss4lyfe', 0, 'abcdefghijklmnopqrstuvwxyz');
 
 module.exports = function(fileInfo, api) {
   const j = api.jscodeshift;
@@ -48,7 +50,7 @@ module.exports = function(fileInfo, api) {
       const classIdentifier = property.key;
       const styles = JSON.parse(recast.prettyPrint(property.value).code);
       const markup = CSSPropertyOperations.createMarkupForStyles(styles, null);
-      const selector = 'swag';
+      const selector = hashids.encode(Date.now());
       const declaration = `.${selector}{${markup}}`;
 
       // Write out the CSS declaration.
