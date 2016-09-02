@@ -7,6 +7,7 @@ but delivering CSS stylesheets to the browser.
 
 * [Try It](#try-it)
 * [Why Inline Styles?](#why-inline-styles)
+* [Problems With Inline Styles](#problems-with-inline-styles)
 * [How It Works](#how-it-works)
 * [License](#license)
 
@@ -41,7 +42,46 @@ the class name assignment and the associated style declarations in the DOM.
 
 ## Why Inline Styles?
 
+## Problems With Inline Styles
+
 ## How It Works
+
+At a high level, the only goal of this static file transformation is to take inline declarations such as:
+
+```clojure
+(defstyles even-odd
+  {:app
+    {:alignItems "center"
+     :backgroundImage (gradient dark-blue light-blue)
+     :display "flex"
+     :flexGrow 1
+     :justifyContent "space-around"}})
+```
+
+and produce from them the corresponding CSS asset describing their styles.
+
+```css
+._y8jk_app {
+  align-items: center;
+  background-image: linear-gradient(to top left, #2c3e50, #4ca1af);
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-around;
+}
+```
+
+This pipeline has two stages: macro expansion at compile time from ClojureScript to JavaScript, and then a JavaScript AST
+transformation which removes the inline style declaration and produces a CSS file. I find it helpful to think about the
+stages in reverse order:
+
+#### AST Transformation
+
+#### Macro Expansion
+
+The reason for the decision to implement this in ClojureScript is because of the first-class support for macros in
+Clojure/ClojureScript. This detail enables us to write inline styles with references to global variables and helper
+functions in the way we've grown accustomed to, but produce *static style descriptors* which can be analyzed and extracted
+from the JavaScript AST.
 
 ## License
 
