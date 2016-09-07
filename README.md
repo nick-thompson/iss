@@ -44,6 +44,45 @@ the class name assignment and the associated style declarations in the DOM.
 
 ## Problems With Inline Styles
 
+Writing inline styles solves many of the problems we've come to agree upon with writing and maintaining CSS on
+non-trivial web applications, but I see a couple major issues with actually shipping inline styles. Mostly this
+has to do with the fact that browser implementations have evolved to optimize for the conventional best practices
+we've been relying on for the past decade or so, and *not* for shipping inline styles:
+
+#### Resource Fetching
+Most moderately or highly complex web applications now rely on several external resources: one or more stylesheets,
+one or more JavaScript files, media elements, etc. For that reason browsers have optimized for fetching multiple
+resources: preloading, deferred fetching, async fetching, parallel downloads. We've come to rely on these features
+for the performance of our highly complex web applications, and if instead of providing external CSS stylesheets which
+the browser can readily handle we suddenly switch to inlining all of our CSS, we immediately invalidate these
+optimizations.
+
+#### Caching
+Really this could be included in the previous point, but I think it deserves the highlight. Browser support for caching
+external resources is really good, but you'll rarely find cache headers on the response servered for the root of your
+application because we need the ability to update, and have no easy way of telling a browser to clear cache entries for
+`www.mydomain.com/`. For external resources it's easy: just have the new version of your HTML document point to a
+different resource. Losing cacheing is painful, and remember we're talking about increasing the size of our initial
+payload as well.
+
+#### Render Performance
+In rendering our applications, browsers all follow a similar flow: parse relevant markup -> construct a render tree ->
+layout the render tree -> paint. The construction of the render tree typically involves a separate construction of
+the DOM that we all know and love, and a similar structure which we'll call the CSSOM (this is the name given in Blink,
+though most modern browsers have the same structure by a different name). These two trees are then combined to form
+the render tree. The CSSOM is an abstraction over the CSS declarations we've made in our stylesheets to optimize sharing
+similar declarations and reduce object allocation in the render loop, because surely we want this step to be as fast as
+possible if it's going to be a mainstay of the render loop. But the use of inline style attributes complicates the
+optimizations available here, especially when updates to a set of inline styles is inserted into the DOM via `innerHTML`
+or some similar construct which requires the parsing phase.
+
+#### Pseudo-elements/Pseudo-classes
+Last but not least, this is a complication of the developer experience. We've grown accustomed to writing selectors which
+make liberal user of `:hover` classes, `:after` elements, etc., which aren't available as inline style attributes.
+Using inline styles doesn't prevent us from implementing this kind of behavior, but it means we have to reinvent a 
+developer-friendly way of doing it. [Radium](https://github.com/FormidableLabs/radium) comes to mind as a good example,
+but I'm sure there's a lot more to be made of this space.
+
 ## How It Works
 
 At a high level, the only goal of this static file transformation is to take inline declarations such as:
