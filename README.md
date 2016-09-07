@@ -8,7 +8,7 @@ but delivering CSS stylesheets to the browser.
 * [Try It](#try-it)
 * [Why Inline Styles?](#why-inline-styles)
 * [Problems With Inline Styles](#problems-with-inline-styles)
-* [The Big Idea](#the-big-idea)
+* [Enter ClojureScript](#enter-clojurescript)
 * [How It Works](#how-it-works)
 * [License](#license)
 
@@ -97,7 +97,7 @@ Using inline styles doesn't prevent us from implementing this kind of behavior, 
 developer-friendly way of doing it. [Radium](https://github.com/FormidableLabs/radium) again comes to mind as a good 
 example, but I'm sure there's a lot more to be made of this space.
 
-## The Big Idea
+## Enter ClojureScript
 
 If you're with me so far, it seems pretty straightforward that we should draw the following conclusion: we want to be able
 to write styles inline, but ship external CSS assets to the browser. I'm not introducing anything new here; there have 
