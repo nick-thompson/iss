@@ -99,6 +99,30 @@ example, but I'm sure there's a lot more to be made of this space.
 
 ## The Big Idea
 
+If you're with me so far, it seems pretty straightforward that we should draw the following conclusion: we want to be able
+to write styles inline, but ship external CSS assets to the browser. I'm not introducing anything new here; there have 
+been attempts at this same thing, such as [react-style](https://github.com/js-next/react-style).
+
+Unfortunately, many such solutions operate either on actual inline styles, or on dynamically creating and injecting
+`<style>` tags into the DOM at runtime. The value I see comes from being able to extract style information from your
+JavaScript at build time and provide truly external stylesheets. But in order to do that we have need this style
+information to be statically analyzable, which is difficult because JavaScript doesn't have a good story for things like
+constant propagation and constant folding, thereby making it really hard to evaluate expressions like this at build time:
+
+```js
+var styles = StyleSheet.create({
+  padding: constants.gutterWidth * 2,
+});
+```
+
+I'm not sure JavaScript will have solutions for these problems soon either. Babel and 
+[Babili](https://babeljs.io/blog/2016/08/30/babili) seem like really good first steps, but, for example, until we
+have true constants by value, constant propagation will be really difficult.
+
+This is where ClojureScript comes in: in a language with such a powerful compiler, first-class support for macros,
+and true constant values, we can write our CSS in a format that enables dynamic expressivity but ultimately produces
+expressions that are statically analyzable and can be extracted to proper CSS stylesheets.
+
 ## How It Works
 
 At a high level, the only goal of this static file transformation is to take inline declarations such as:
