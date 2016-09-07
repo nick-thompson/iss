@@ -8,6 +8,7 @@ but delivering CSS stylesheets to the browser.
 * [Try It](#try-it)
 * [Why Inline Styles?](#why-inline-styles)
 * [Problems With Inline Styles](#problems-with-inline-styles)
+* [The Big Idea](#the-big-idea)
 * [How It Works](#how-it-works)
 * [License](#license)
 
@@ -41,6 +42,19 @@ The app is a simple fork of a trivial [Om](https://github.com/omcljs/om/) exampl
 the class name assignment and the associated style declarations in the DOM.
 
 ## Why Inline Styles?
+*Inspired by [CSS In JS](http://blog.vjeux.com/2014/javascript/react-css-in-js-nationjs.html) by [@vjeux](https://github.com/vjeux)*
+
+We've been aware of several problems with CSS for a long time now. There have been a few attempts at solving some of
+these problems via convention and methodology, such as [BEM](http://getbem.com/), [SUITCSS](https://suitcss.github.io/),
+and [OOCSS](https://github.com/stubbornella/oocss), and via tools such as [Less](http://lesscss.org/) and 
+[Sass](http://sass-lang.com/). But by and large these attempts fail to really solve the bigger problems we're seeing:
+namespacing, dependency expression, dead code elimination, constant sharing, and minification. In the talk linked above,
+Christopher (@vjeux) does a really great job of enumerating these issues and why writing styles inline solves them. I'd
+strongly encourage you to give that talk a thoughtful listen.
+
+These ideas have been around for a while, and there have been a lot of attempts at finding a true solution. There's a lot
+of insight to be gleaned from looking through the various projects listed 
+[here](https://github.com/FormidableLabs/radium/tree/master/docs/comparison).
 
 ## Problems With Inline Styles
 
@@ -80,8 +94,10 @@ or some similar construct which requires the parsing phase.
 Last but not least, this is a complication of the developer experience. We've grown accustomed to writing selectors which
 make liberal user of `:hover` classes, `:after` elements, etc., which aren't available as inline style attributes.
 Using inline styles doesn't prevent us from implementing this kind of behavior, but it means we have to reinvent a 
-developer-friendly way of doing it. [Radium](https://github.com/FormidableLabs/radium) comes to mind as a good example,
-but I'm sure there's a lot more to be made of this space.
+developer-friendly way of doing it. [Radium](https://github.com/FormidableLabs/radium) again comes to mind as a good 
+example, but I'm sure there's a lot more to be made of this space.
+
+## The Big Idea
 
 ## How It Works
 
